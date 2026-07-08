@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harness Engineering"
+  short_description: "Design and improve coding-agent harnesses"
+  default_prompt: "Use $harness-engineering to audit this repository's coding-agent harness and propose concrete guide and sensor improvements."
