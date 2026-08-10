@@ -1,4 +1,4 @@
 interface:
   display_name: "Harness Engineering"
-  short_description: "Build persistent, verifiable agent workflows"
-  default_prompt: "Use $harness-engineering to analyze this repository and create or resume a persistent, project-owned coding-agent harness with explicit validation and recovery."
+  short_description: "Build persistent, stack-aware agent workflows"
+  default_prompt: "Use $harness-engineering to detect this repository’s stack and create or resume a persistent, project-owned workflow through verified completion."

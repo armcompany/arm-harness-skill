@@ -26,13 +26,15 @@ Prefer small, enforceable controls over long rule documents. Every durable rule 
 
 1. Resolve the repository root and read its agent instructions before changing anything.
 2. Clarify the bounded context: target agents, topology, autonomy, failure history, checks, release constraints, and what "less supervision" means.
-3. Inventory the current harness before proposing changes. If filesystem access is available, run:
+3. Inventory the current harness and detect its stacks before proposing changes. If filesystem access is available, run:
 
    ```bash
    python skills/harness-engineering/scripts/audit_harness.py . --format markdown
    ```
 
    If the skill is installed elsewhere, resolve the script path from the skill directory.
+
+   Read `references/stack-discovery.md` for every detected stack. Prefer commands declared by the repository; treat conventional commands only as candidates until configuration confirms them.
 
 4. If the request says **Resume Harness** or project state already exists, follow the recovery protocol in `references/persistent-project-harness.md` before selecting work.
 5. Classify each control by direction, execution type, lifecycle position, and regulation category. Read `references/control-taxonomy.md` when designing the matrix.
@@ -102,3 +104,4 @@ For implementation, edit the project directly when asked. Keep changes scoped, f
 - Read `references/sdd-pattern.md` when designing a specification-driven development flow, behavior harness, approved fixtures pattern, or spec-to-plan-to-tasks agent workflow.
 - Read `references/persistent-project-harness.md` for project-owned state, recovery, task status, checkpoints, validation, and safety rules.
 - Read `references/project-harness-templates.md` when creating the concrete persistent harness artifacts.
+- Read `references/stack-discovery.md` to map languages, frameworks, package managers, and repository evidence to proportionate validation commands.
