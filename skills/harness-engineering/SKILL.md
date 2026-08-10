@@ -1,7 +1,7 @@
 ---
 name: harness-engineering
 description: >-
-  Design, audit, and improve coding-agent harnesses: the prompts, AGENTS.md/CLAUDE.md rules, skills, tools, MCP servers, hooks, CI checks, sandboxes, subagents, planning loops, memory/context policies, and feedback sensors around an AI coding model. Use when Codex is asked for harness engineering, engenharia de arnes, agent-harness design, coding-agent autonomy, reducing agent mistakes, turning repeated agent failures into rules or checks, creating AGENTS.md/CLAUDE.md guidance, designing hooks or CI sensors for agents, building a harness template for a stack, auditing an existing agent setup, or improving guide/sensor coverage for maintainability, architecture fitness, behavior, security, or runtime reliability.
+  Design, audit, implement, and resume coding-agent harnesses: AGENTS.md/CLAUDE.md rules, project-owned mission and state, plans, journals, checkpoints, recovery, skills, tools, MCP servers, hooks, CI checks, sandboxes, subagents, and feedback sensors. Use for harness engineering, engenharia de arnes, agent autonomy, persistent execution across threads or models, "Resume Harness", reducing repeated mistakes, turning failures into rules or checks, or building and auditing agent workflows.
 ---
 
 # Harness Engineering
@@ -12,19 +12,21 @@ Treat a coding agent as `model + harness`. Improve the harness by making desired
 
 ## Operating Model
 
-Use this skill to produce one of four outputs:
+Use this skill to produce one or more of five outputs:
 
 - **Harness audit**: inventory current guides, sensors, hooks, tools, and gaps.
 - **Harness design**: propose a coherent target harness for a repo, team, stack, or agent workflow.
 - **Harness implementation**: edit AGENTS.md, skills, scripts, hooks, CI, review prompts, or templates.
 - **Harness ratchet**: convert observed agent failures into minimal durable controls.
+- **Persistent project harness**: make mission state recoverable from repository artifacts instead of model memory.
 
 Prefer small, enforceable controls over long rule documents. Every durable rule should trace to a real failure, external constraint, or high-risk workflow.
 
 ## Workflow
 
-1. Clarify the bounded context: target agent(s), repository or service topology, autonomy level, failure history, CI/release constraints, and what "less supervision" should mean.
-2. Inventory the current harness before proposing changes. If filesystem access is available, run:
+1. Resolve the repository root and read its agent instructions before changing anything.
+2. Clarify the bounded context: target agents, topology, autonomy, failure history, checks, release constraints, and what "less supervision" means.
+3. Inventory the current harness before proposing changes. If filesystem access is available, run:
 
    ```bash
    python skills/harness-engineering/scripts/audit_harness.py . --format markdown
@@ -32,10 +34,11 @@ Prefer small, enforceable controls over long rule documents. Every durable rule 
 
    If the skill is installed elsewhere, resolve the script path from the skill directory.
 
-3. Classify each control by direction, execution type, lifecycle position, and regulation category. Read `references/control-taxonomy.md` when designing the matrix.
-4. Work backward from desired behavior or observed failures to harness components. Use `references/ratchet-playbook.md` for failure-to-control conversion.
-5. Design the smallest coherent change set. Use `references/harness-blueprint.md` for component patterns and `references/templates.md` for concrete artifacts.
-6. Implement controls where they naturally belong:
+4. If the request says **Resume Harness** or project state already exists, follow the recovery protocol in `references/persistent-project-harness.md` before selecting work.
+5. Classify each control by direction, execution type, lifecycle position, and regulation category. Read `references/control-taxonomy.md` when designing the matrix.
+6. Work backward from desired behavior or observed failures to harness components. Use `references/ratchet-playbook.md` for failure-to-control conversion.
+7. Design the smallest coherent change set. For persistent execution, read `references/persistent-project-harness.md` and `references/project-harness-templates.md`; otherwise use `references/harness-blueprint.md` and `references/templates.md`.
+8. Implement controls where they naturally belong:
 
    - Put always-on, high-signal conventions in AGENTS.md/CLAUDE.md.
    - Put detailed or task-specific procedures in skills or references with progressive disclosure.
@@ -43,7 +46,16 @@ Prefer small, enforceable controls over long rule documents. Every durable rule 
    - Put semantic judgment in review skills, evaluator agents, or LLM-as-judge workflows.
    - Put safety and permissions in gates, sandboxes, allowlists, and approval policies.
 
-7. Validate by simulating at least one previously observed failure. A harness improvement is not done until the new guide or sensor would have prevented, surfaced, or corrected the failure.
+9. Validate the changed artifacts and the target project's own checks. When a project harness exists, run `scripts/validate_project_harness.py <repo>`.
+10. Simulate at least one relevant failure. A harness improvement is not done until the guide or sensor prevents, surfaces, or corrects it.
+
+## Persistent Execution Protocol
+
+Use a bounded `Frame -> Observe -> Run -> Verify -> Learn/Loop -> Persist` cycle. Work on one logical task at a time. The current code, Git diff, and runtime behavior remain the technical source of truth; harness records can be stale.
+
+On resume: load instructions, state, plan, journal, architecture, and the latest checkpoint; inspect current code and Git state; reconcile inconsistencies; then state `CURRENT_STATE`, `CURRENT_OBJECTIVE`, `NEXT_ACTION`, and `BLOCKERS`.
+
+Mark work `DONE` only after its declared validation passes. Use `BLOCKED` only for missing access, authority, an external dependency, or a material user decision. Use `FAILED` after bounded attempts with changed hypotheses leave an actionable failure. Do not retry an unchanged failed action indefinitely.
 
 ## Control Design Rules
 
@@ -56,6 +68,9 @@ Prefer small, enforceable controls over long rule documents. Every durable rule 
 - Remove obsolete controls when models, tools, or codebase structure make them redundant.
 - Do not add vague principles such as "write clean code" unless they are backed by concrete examples or checks.
 - Do not install or recommend MCP servers, hooks, or scripts without considering prompt-injection and permission risks.
+- Keep operational state concise and machine-readable. Journal and checkpoints record facts, not hidden reasoning.
+- Do not repeat completed work without evidence of regression, and never trust the journal over the current repository.
+- Create only artifacts that carry useful state; empty ceremony weakens the harness.
 
 ## Output Shapes
 
@@ -85,3 +100,5 @@ For implementation, edit the project directly when asked. Keep changes scoped, f
 - Read `references/templates.md` when drafting AGENTS.md, audit reports, control matrices, sprint contracts, or hook policies.
 - Read `references/externalization-paper.md` when the task needs academic framing, literature-grounded language, or the memory/skills/protocols/harness externalization model.
 - Read `references/sdd-pattern.md` when designing a specification-driven development flow, behavior harness, approved fixtures pattern, or spec-to-plan-to-tasks agent workflow.
+- Read `references/persistent-project-harness.md` for project-owned state, recovery, task status, checkpoints, validation, and safety rules.
+- Read `references/project-harness-templates.md` when creating the concrete persistent harness artifacts.

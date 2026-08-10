@@ -4,7 +4,7 @@
   "groupings": [
     {
       "title": "Agent Workflows",
-      "description": "Skills for designing and improving coding-agent harnesses.",
+      "description": "Skills for persistent, verifiable coding-agent workflows and harness design.",
       "skills": [
         "harness-engineering"
       ]

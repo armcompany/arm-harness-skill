@@ -106,6 +106,7 @@ def detect(root: Path) -> dict[str, Any]:
         "tests": [],
         "package_scripts": {},
         "planning_and_memory": [],
+        "persistent_harness": [],
         "agent_configs": [],
         "notes": [],
     }
@@ -142,6 +143,8 @@ def detect(root: Path) -> dict[str, Any]:
             result["agent_configs"].append(rel_path)
         if name.lower() in {"plan.md", "handoff.md", "memory.md", "progress.md", ".agent_memory.md"}:
             result["planning_and_memory"].append(rel_path)
+        if rel_path.startswith(".harness/") or rel_path.startswith(".agents/harness/"):
+            result["persistent_harness"].append(rel_path)
 
     for key in [
         "guides",
@@ -152,6 +155,7 @@ def detect(root: Path) -> dict[str, Any]:
         "lint_and_static_analysis",
         "tests",
         "planning_and_memory",
+        "persistent_harness",
         "agent_configs",
     ]:
         result[key] = sorted(set(result[key]))
@@ -180,6 +184,7 @@ def render_markdown(data: dict[str, Any]) -> str:
         ("Lint and static analysis", "lint_and_static_analysis"),
         ("Tests", "tests"),
         ("Planning and memory", "planning_and_memory"),
+        ("Persistent harness", "persistent_harness"),
         ("Agent configs", "agent_configs"),
     ]
 
