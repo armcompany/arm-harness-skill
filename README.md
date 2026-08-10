@@ -286,11 +286,13 @@ The agent should resolve exact targets, preserve unrelated work, and request aut
 - `references/persistent-project-harness.md`: persistent state and recovery model;
 - `references/project-harness-templates.md`: adaptable artifact templates;
 - `references/stack-discovery.md`: stack detection and validation guidance;
+- `references/security-production.md`: trust, MCP, secrets, supply-chain, deployment, migration, and production gates;
 - `references/control-taxonomy.md`: guide and sensor classification;
 - `references/harness-blueprint.md`: component design patterns;
 - `references/ratchet-playbook.md`: failure-to-control process;
 - `references/sdd-pattern.md`: specification-driven behavior workflow;
 - `scripts/audit_harness.py`: conservative repository inventory;
+- `scripts/test_audit_harness.py`: dependency-free multi-stack detection checks;
 - `scripts/validate_project_harness.py`: cross-file state validator and failure simulation.
 
 The skill intentionally does not include a project scaffold, framework replacement, or universal test command. It extends the project that already exists.

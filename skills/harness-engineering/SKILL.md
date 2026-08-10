@@ -48,6 +48,8 @@ Prefer small, enforceable controls over long rule documents. Every durable rule 
    - Put semantic judgment in review skills, evaluator agents, or LLM-as-judge workflows.
    - Put safety and permissions in gates, sandboxes, allowlists, and approval policies.
 
+   For MCP, untrusted content, credentials, deployment, migrations, or production access, read `references/security-production.md` before proposing or executing controls.
+
 9. Validate the changed artifacts and the target project's own checks. When a project harness exists, run `scripts/validate_project_harness.py <repo>`.
 10. Simulate at least one relevant failure. A harness improvement is not done until the guide or sensor prevents, surfaces, or corrects it.
 
@@ -105,3 +107,4 @@ For implementation, edit the project directly when asked. Keep changes scoped, f
 - Read `references/persistent-project-harness.md` for project-owned state, recovery, task status, checkpoints, validation, and safety rules.
 - Read `references/project-harness-templates.md` when creating the concrete persistent harness artifacts.
 - Read `references/stack-discovery.md` to map languages, frameworks, package managers, and repository evidence to proportionate validation commands.
+- Read `references/security-production.md` for trust boundaries, MCP/tool governance, secrets, supply-chain checks, release gates, migrations, rollback, and production authorization.
