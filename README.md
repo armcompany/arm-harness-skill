@@ -291,8 +291,10 @@ The agent should resolve exact targets, preserve unrelated work, and request aut
 - `references/harness-blueprint.md`: component design patterns;
 - `references/ratchet-playbook.md`: failure-to-control process;
 - `references/sdd-pattern.md`: specification-driven behavior workflow;
+- `references/externalization-paper.md`: academic framing of memory, skills, protocols, and harnesses;
 - `scripts/audit_harness.py`: conservative repository inventory;
 - `scripts/test_audit_harness.py`: dependency-free multi-stack detection checks;
-- `scripts/validate_project_harness.py`: cross-file state validator and failure simulation.
+- `scripts/validate_project_harness.py`: cross-file state validator and failure simulation;
+- `agents/openai.yaml`: optional interface metadata for Codex and the ChatGPT desktop app.
 
 The skill intentionally does not include a project scaffold, framework replacement, or universal test command. It extends the project that already exists.
