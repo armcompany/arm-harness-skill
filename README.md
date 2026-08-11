@@ -4,6 +4,13 @@
 
 The skill is language-agnostic. It detects repository evidence and adapts to JavaScript/TypeScript, React Native/Expo, Python, Go, Rust, Java/Kotlin, .NET, Ruby, PHP, Swift, and mixed-stack monorepos without creating a different Harness for each language.
 
+This repository publishes two skills:
+
+| Skill | Purpose |
+| --- | --- |
+| `harness-engineering` | Persistent, stack-agnostic agent execution system: audit, plan, execute, validate, recover, ratchet. |
+| `react-native-architecture` | Mobile architecture specialist: Expo vs Bare, monolith vs modular superapp, REST vs GraphQL, render/logic separation, state boundaries, typing, tests, and release scripts. |
+
 ## What problem it solves
 
 An LLM session is temporary. A development mission usually is not. Without external state, a new thread or provider may repeat completed work, lose blockers, trust stale summaries, or declare success after writing code without validating it.
@@ -298,3 +305,36 @@ The agent should resolve exact targets, preserve unrelated work, and request aut
 - `agents/openai.yaml`: optional interface metadata for Codex and the ChatGPT desktop app.
 
 The skill intentionally does not include a project scaffold, framework replacement, or universal test command. It extends the project that already exists.
+
+## React Native Architecture skill
+
+`react-native-architecture` is the mobile companion skill. It does not start from a folder template: it runs an architecture interview, records the decisions as ADRs, and only then designs or refactors the structure.
+
+```bash
+npx skills add armcompany/arm-harness-skill --skill react-native-architecture
+```
+
+Decisions it forces to the surface: Expo (CNG) vs Bare, monolith feature-first vs modular superapp, REST vs GraphQL, navigation model, offline tier, and release policy. Contracts it enforces: components render / hooks decide / `api/` fetches, TanStack Query owns server state while Zustand owns client state, no untyped boundary, and a test tier may only mock the tier below it.
+
+```bash
+python path/to/react-native-architecture/scripts/audit_rn_project.py . --format markdown
+python path/to/react-native-architecture/scripts/validate_rn_architecture.py . --strict
+```
+
+The audit detects workflow, topology, versions, state and transport libraries, and scans for boundary violations with `path:line`. The validator turns that into pass/warn/fail checks and exits non-zero under `--strict`, so it can run as a CI gate.
+
+Included resources:
+
+- `SKILL.md`: decision rules, workflow, anti-patterns, and output shapes;
+- `references/architecture-interview.md`: the decision interview and scoring for Expo/Bare, monolith/superapp, REST/GraphQL;
+- `references/project-structure.md`: monolith and modular layouts, module contract, boundary lint rules, extraction path;
+- `references/state-and-hooks.md`: server/client state boundary, hook layers, render/logic separation;
+- `references/data-layer.md`: transport isolation, query keys, mutations, error taxonomy, offline tiers;
+- `references/typing-contracts.md`: strict TypeScript, codegen, Zod boundaries, navigation and env typing;
+- `references/testing-strategy.md`: test tiers and mocking rules, Maestro vs Detox, CI gates;
+- `references/scripts-and-release.md`: canonical scripts, CI lanes, EAS/Fastlane, OTA and native-change policy;
+- `references/templates.md`: ADR, module contract, hooks, audit report, and PR checklist templates;
+- `scripts/audit_rn_project.py`: stack and violation scanner;
+- `scripts/validate_rn_architecture.py`: contract gate with `--strict`;
+- `scripts/test_audit_rn_project.py`: dependency-free checks for both scripts;
+- `agents/openai.yaml`: optional interface metadata for Codex and the ChatGPT desktop app.

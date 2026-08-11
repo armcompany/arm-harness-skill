@@ -1,0 +1,4 @@
+interface:
+  display_name: "React Native Architecture"
+  short_description: "Interrogate, design, and enforce Expo or Bare app architecture"
+  default_prompt: "Use $react-native-architecture to interview this project's constraints, decide Expo vs Bare and monolith vs modular, then design or audit the folder structure, state boundaries, typing, tests, and release scripts."

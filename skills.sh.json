@@ -8,6 +8,13 @@
       "skills": [
         "harness-engineering"
       ]
+    },
+    {
+      "title": "Mobile Architecture",
+      "description": "Skills for designing and auditing production React Native application architecture.",
+      "skills": [
+        "react-native-architecture"
+      ]
     }
   ]
 }
