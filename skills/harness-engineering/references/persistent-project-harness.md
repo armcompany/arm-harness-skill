@@ -6,8 +6,8 @@ Use this pattern when an agent must continue a mission across threads, restarts,
 
 1. Repository artifacts own operational state; code, Git diff, tests, and runtime behavior own technical truth.
 2. Recovery is reconciliation, not blind trust in the last journal entry.
-3. One logical task runs at a time. Every task declares its validation before implementation.
-4. Written code is not proof. `DONE` requires the declared check to pass.
+3. One logical task runs at a time. Scope, acceptance criteria, and validation are aligned with the user before implementation starts.
+4. Written code is not proof. `DONE` requires the declared check to have been run and its real output observed—evidence before assertion.
 5. Record operational facts, decisions, and outcomes—never private chain-of-thought.
 6. Keep the harness proportional. Omit files and automation that do not improve recovery or correctness.
 
@@ -57,12 +57,12 @@ If a previous provider or browser session was interrupted, verify the observable
 
 ## Bounded FOR-L loop
 
-1. **Frame** — set goal, non-goals, acceptance criteria, checks, and one `RUNNING` task.
+1. **Frame** — classify the request (spike, bounded change, or architectural work); set goal, non-goals, acceptance criteria, and checks; align them with the user and get explicit approval of the approach before marking one task `RUNNING`. The design artifact scales with the task—two sentences in chat for a bounded change, a written spec for architectural work—but approval is always a hard gate.
 2. **Observe** — inspect relevant code, specifications, ADRs, Git state, and current behavior.
-3. **Run** — make the smallest coherent in-scope change.
-4. **Verify** — run task-specific checks, then the repository's aggregate verification when appropriate.
-5. **Learn / Loop** — diagnose failures, record only reusable findings, change the hypothesis, and retry.
-6. **Persist** — update state, plan, journal, errors if useful, checkpoint, and next action.
+3. **Run** — make the smallest coherent in-scope change. Where a test harness exists, write the failing test first, watch it fail for the right reason, then implement until it passes.
+4. **Verify** — run task-specific checks, then the repository's aggregate verification when appropriate. Capture the actual command output; never claim success without observed evidence.
+5. **Learn / Loop** — on failure, reproduce the problem, isolate one root-cause hypothesis, change a single variable, and re-verify. Record only reusable findings.
+6. **Persist** — update state, plan, journal, errors if useful, checkpoint, and next action, including the validation evidence.
 
 Do not retry the same failed action unchanged more than twice. Avoid autonomous loops with no iteration bound, new evidence, or escalation rule.
 

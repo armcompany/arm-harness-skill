@@ -57,9 +57,16 @@ Prefer small, enforceable controls over long rule documents. Every durable rule 
 
 Use a bounded `Frame -> Observe -> Run -> Verify -> Learn/Loop -> Persist` cycle. Work on one logical task at a time. The current code, Git diff, and runtime behavior remain the technical source of truth; harness records can be stale.
 
+Each phase carries a built-in execution discipline:
+
+- **Frame — scope gate.** Before declaring a task `RUNNING`, classify the request (spike, bounded change, or architectural work), align scope and acceptance criteria with the user, and get explicit approval of the intended approach. The ceremony scales with the task—two sentences in chat for a bounded change, a written spec for architectural work—but the approval gate never does. Never implement on assumptions the user has not confirmed.
+- **Run — test first.** Where the repository has a test harness, write or extend a failing test that names the expected behavior, watch it fail for the right reason, implement the smallest change that passes it, then refactor. Where no test harness exists, declare the manual or scripted check that will stand in for one before writing code.
+- **Verify — evidence before completion.** Mark a task `DONE` only after running its declared validation and observing the real output. Quote the evidence in the journal or checkpoint; never infer success from "code was written" or "it compiled".
+- **Learn/Loop — systematic debugging.** On failure, reproduce reliably, form one root-cause hypothesis, change one variable, and re-verify. Investigate before fixing; a fix without a diagnosed cause is a guess. Record only durable, reusable findings.
+
 On resume: load instructions, state, plan, journal, architecture, and the latest checkpoint; inspect current code and Git state; reconcile inconsistencies; then state `CURRENT_STATE`, `CURRENT_OBJECTIVE`, `NEXT_ACTION`, and `BLOCKERS`.
 
-Mark work `DONE` only after its declared validation passes. Use `BLOCKED` only for missing access, authority, an external dependency, or a material user decision. Use `FAILED` after bounded attempts with changed hypotheses leave an actionable failure. Do not retry an unchanged failed action indefinitely.
+Mark work `DONE` only after its declared validation passes, with the command output as evidence. Use `BLOCKED` only for missing access, authority, an external dependency, or a material user decision. Use `FAILED` after bounded attempts with changed hypotheses leave an actionable failure. Do not retry an unchanged failed action indefinitely.
 
 ## Control Design Rules
 

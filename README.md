@@ -1,4 +1,17 @@
-# Arm Harness Skill
+```text
+ @@@@@@   @@@@@@@   @@@@@@@@@@      @@@  @@@   @@@@@@   @@@@@@@   @@@  @@@  @@@@@@@@   @@@@@@    @@@@@@
+@@@@@@@@  @@@@@@@@  @@@@@@@@@@@     @@@  @@@  @@@@@@@@  @@@@@@@@  @@@@ @@@  @@@@@@@@  @@@@@@@   @@@@@@@
+@@!  @@@  @@!  @@@  @@! @@! @@!     @@!  @@@  @@!  @@@  @@!  @@@  @@!@!@@@  @@!       !@@       !@@
+!@!  @!@  !@!  @!@  !@! !@! !@!     !@!  @!@  !@!  @!@  !@!  @!@  !@!!@!@!  !@!       !@!       !@!
+@!@!@!@!  @!@!!@!   @!! !!@ @!@     @!@!@!@!  @!@!@!@!  @!@!!@!   @!@ !!@!  @!!!:!    !!@@!!    !!@@!!
+!!!@!!!!  !!@!@!    !@!   ! !@!     !!!@!!!!  !!!@!!!!  !!@!@!    !@!  !!!  !!!!!:     !!@!!!    !!@!!!
+!!:  !!!  !!: :!!   !!:     !!:     !!:  !!!  !!:  !!!  !!: :!!   !!:  !!!  !!:            !:!       !:!
+:!:  !:!  :!:  !:!  :!:     :!:     :!:  !:!  :!:  !:!  :!:  !:!  :!:  !:!  :!:           !:!       !:!
+::   :::  ::   :::  :::     ::      ::   :::  ::   :::  ::   :::   ::   ::   :: ::::  :::: ::   :::: ::
+ :   : :   :   : :   :      :        :   : :   :   : :   :   : :  ::    :   : :: ::   :: : :    :: : :
+```
+
+# ARM Harness
 
 `harness-engineering` gives coding agents a persistent, project-owned execution system. It can analyze an existing repository, create or improve its Harness, execute features through explicit validation, recover after interruption, and turn repeated failures into durable controls.
 
@@ -55,6 +68,10 @@ Confirm that `harness-engineering` appears in the agent's available skills befor
 
 ## Quick start
 
+Usage is always the same four steps. Every interaction starts by invoking `$harness-engineering` inside the project you want to work on.
+
+### 1. Set up the Harness (once per project)
+
 Open the existing project—not an empty replacement project—and ask:
 
 ```text
@@ -66,7 +83,11 @@ and existing behavior. Discover the real validation commands before creating
 the mission and plan. Do not commit or push.
 ```
 
-After setup, provide a feature with its desired outcome and constraints:
+This creates `AGENTS.md` and `.harness/` (mission, plan, state, journal, checkpoints) adapted to the repository's real stacks and commands.
+
+### 2. Execute a feature
+
+Provide the feature with its desired outcome and constraints:
 
 ```text
 Use $harness-engineering.
@@ -77,10 +98,29 @@ until the feature's Definition of Done passes. Record external blockers rather
 than claiming completion without device validation.
 ```
 
-After an interruption, a new thread only needs:
+The agent aligns scope and acceptance criteria with you before implementing (the approval gate), then works one verified task at a time through the Frame → Observe → Run → Verify → Persist cycle.
+
+### 3. Resume after an interruption
+
+Closed the editor, switched models, or started a new thread? A new session only needs:
 
 ```text
 Use $harness-engineering. Resume Harness.
+```
+
+The agent reloads the mission, plan, state, and latest checkpoint, reconciles them against the current code and Git diff, and continues from the exact next action.
+
+### 4. Validate or audit at any time
+
+```text
+Use $harness-engineering to reconcile and validate the existing .harness state
+against the current plan, checkpoint, code, and Git diff.
+```
+
+Or run the bundled structural validator directly:
+
+```bash
+python path/to/harness-engineering/scripts/validate_project_harness.py .
 ```
 
 ## How feature execution works
@@ -103,7 +143,7 @@ Persist state → Checkpoint → Next action
 
 ### Frame
 
-The agent defines the current objective, non-goals, acceptance criteria, dependencies, required validation, and one `RUNNING` task.
+The agent classifies the request (spike, bounded change, or architectural work), defines the current objective, non-goals, acceptance criteria, dependencies, and required validation, then aligns them with the user. Implementation starts only after explicit approval of the approach—the design artifact scales with the task, the approval gate does not. Exactly one task is `RUNNING`.
 
 ### Observe
 
@@ -111,15 +151,15 @@ It inspects the relevant code, specifications, architecture decisions, Git statu
 
 ### Run
 
-It makes the smallest coherent change that satisfies the current task while preserving existing architecture and unrelated work.
+It makes the smallest coherent change that satisfies the current task while preserving existing architecture and unrelated work. Where a test harness exists, it writes the failing test first and implements until it passes.
 
 ### Verify
 
-It runs task-specific checks followed by wider repository checks when appropriate. Code being written or compiled is not automatically proof of correct behavior.
+It runs task-specific checks followed by wider repository checks when appropriate. Code being written or compiled is not automatically proof of correct behavior: a task is `DONE` only with the validation actually executed and its real output observed—evidence before assertion.
 
 ### Learn and loop
 
-On failure, it diagnoses the cause, changes the hypothesis, records only reusable errors, and validates again. It does not repeat the same failed action unchanged indefinitely.
+On failure, it reproduces the problem, isolates one root-cause hypothesis, changes a single variable, and validates again. It records only reusable errors and does not repeat the same failed action unchanged.
 
 ### Persist
 
