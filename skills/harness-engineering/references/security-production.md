@@ -30,6 +30,28 @@ Do not trust a tool description as proof of safe behavior. Tool calls remain sub
 - Preserve the existing package manager and review install scripts, generated changes, and unexpected transitive effects.
 - Treat security scanners as sensors, not automatic permission to rewrite unrelated code or upload source externally.
 
+## Application security baseline
+
+Apply these controls to every piece of software created under the Harness, regardless of stack. Each concern pairs a guide with the cheapest sensor that detects its violation.
+
+**Client-stored permissions and signatures.** Roles, plans, or access flags kept in the browser (localStorage, cookies, client-readable JWT claims) are user-editable and can never be the source of authorization. Guide: the server re-checks authorization on every privileged action; client state is display-only. Sensor: tests that tamper with client state and confirm privileged endpoints still reject; audit for role checks that exist only in frontend code.
+
+**Exposed API keys.** A key shipped in a client bundle, repository, log, or journal grants whoever finds it the key's privileges. Guide: secrets live server-side only, scoped to least privilege, rotatable, and never recorded in Harness artifacts. Sensor: secret scanning (for example gitleaks or trufflehog) pre-commit and in CI; reject a task as `DONE` if a scan fails.
+
+**Misconfigured databases.** Publicly reachable instances, default credentials, or open buckets/collections put personal data directly on the internet. Guide: deny-by-default network exposure, no default credentials, encryption and backup policy reviewed before first real data. Sensor: configuration review plus the project's automated scanners; verify from an unauthenticated network position that data endpoints refuse access.
+
+**Row Level Security (RLS) in Supabase.** PostgREST exposes tables directly through the API, so without RLS any holder of the public anon key can read or write everything. Guide: enable RLS on every table—including storage—and write explicit policies per operation before any table ships. Sensor: verify no table has RLS disabled (for example via `pg_policies` inspection or `supabase db lint`) and run queries as the anon role to confirm denial.
+
+**Authentication failures.** Missing or broken verification on routes, weak session handling, or predictable tokens let attackers in without authorization. Guide: authenticate before authorizing on every endpoint, including server actions and API routes; treat password reset and token refresh as attack surface. Sensor: tests that hit every protected route without credentials and with another user's credentials, expecting rejection.
+
+## Agent execution risk
+
+**Code-executing agents are a different risk class than Q&A models.** A model that only answers can produce a bad statement; an agent that runs code, edits files, or calls tools takes real actions with real side effects. Treat every agent action as an operation on the environment, subject to the same gates as a human operator—not as generated text.
+
+**Sandboxing.** Code written or executed by an agent should run in an isolated environment: container, VM, worktree, or restricted workspace with least-privilege credentials and no production secrets. Guide: development loops never hold production credentials; destructive or outward-facing commands require explicit approval. Sensor: the sandbox boundary itself—if the agent can reach production from a dev loop, the control has failed.
+
+**Shadow builders.** Employees shipping AI-built tools outside governance create an unowned, unaudited attack surface. Guide: make the sanctioned path the easiest path—paved-road templates, discoverable approved workflows, and fast review—so building in the open beats building in the dark. Sensor: inventory what is actually running (domains, deployments, automations) and reconcile it with what is registered and owned.
+
 ## DevOps and production
 
 Classify each action by environment and reversibility:

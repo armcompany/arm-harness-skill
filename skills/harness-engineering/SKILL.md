@@ -48,7 +48,7 @@ Prefer small, enforceable controls over long rule documents. Every durable rule 
    - Put semantic judgment in review skills, evaluator agents, or LLM-as-judge workflows.
    - Put safety and permissions in gates, sandboxes, allowlists, and approval policies.
 
-   For MCP, untrusted content, credentials, deployment, migrations, or production access, read `references/security-production.md` before proposing or executing controls.
+   For MCP, untrusted content, credentials, deployment, migrations, or production access, read `references/security-production.md` before proposing or executing controls. Its application security baseline (server-side authorization, secret hygiene, database exposure, RLS, authentication checks) applies to every piece of software created under the Harness, and its agent execution risk rules apply to the Harness's own operation.
 
 9. Validate the changed artifacts and the target project's own checks. When a project harness exists, run `scripts/validate_project_harness.py <repo>`.
 10. Simulate at least one relevant failure. A harness improvement is not done until the guide or sensor prevents, surfaces, or corrects it.

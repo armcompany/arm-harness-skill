@@ -1,0 +1,152 @@
+#!/usr/bin/env bash
+# harness — thin convenience wrapper over the harness-engineering scripts.
+# It scaffolds and inspects project harness state; the mission itself is
+# always executed by the agent through the harness-engineering skill.
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SCRIPTS_DIR="$ROOT_DIR/skills/harness-engineering/scripts"
+
+usage() {
+  cat <<'EOF'
+Usage: harness <command> [path]
+
+Commands:
+  init [path]      Scaffold a minimal project harness (AGENTS.md + .harness/).
+                   Never overwrites existing files.
+  status [path]    Print CURRENT_STATE, CURRENT_OBJECTIVE, NEXT_ACTION, and
+                   BLOCKERS from .harness/state.json.
+  validate [path]  Run the structural validator against the project harness.
+  audit [path]     Run the repository inventory (stacks, guides, sensors).
+
+path defaults to the current directory.
+EOF
+}
+
+cmd_status() {
+  local target="$1"
+  python3 - "$target" <<'PY'
+import json, sys, os
+
+target = sys.argv[1]
+state_path = os.path.join(target, ".harness", "state.json")
+if not os.path.isfile(state_path):
+    sys.exit(f"No .harness/state.json found in {target!r}. Run 'harness init {target}' first.")
+
+with open(state_path) as f:
+    state = json.load(f)
+
+blockers = state.get("blockers") or []
+print(f"CURRENT_STATE:     {state.get('status', 'unknown')} (task: {state.get('currentTask') or 'none'})")
+print(f"CURRENT_OBJECTIVE: {state.get('mission') or 'not set'}")
+print(f"NEXT_ACTION:       {state.get('nextAction') or 'not set'}")
+print("BLOCKERS:          " + ("; ".join(str(b) for b in blockers) if blockers else "none"))
+PY
+}
+
+cmd_init() {
+  local target="$1"
+  mkdir -p "$target/.harness/checkpoints"
+
+  write_if_missing() {
+    local path="$1"
+    if [ -e "$path" ]; then
+      echo "kept existing: $path"
+    else
+      cat > "$path"
+      echo "created: $path"
+    fi
+  }
+
+  write_if_missing "$target/AGENTS.md" <<'EOF'
+# Agent Instructions
+
+This project runs under a persistent Harness (see `.harness/`).
+
+- On session start: read `.harness/mission.md`, `.harness/state.json`,
+  `.harness/plan.md`, and `.harness/journal.md`; reconcile with the current
+  code and Git diff before acting.
+- Work one logical task at a time. Mark work DONE only after its declared
+  validation passes, with the command output as evidence.
+- Never commit, push, deploy, or run destructive commands without explicit
+  user authorization.
+EOF
+
+  write_if_missing "$target/.harness/mission.md" <<'EOF'
+# Mission
+
+## Current Product State
+## Main Objective
+## Scope
+## Definition of Done
+## Constraints
+## Out of Scope
+EOF
+
+  write_if_missing "$target/.harness/plan.md" <<'EOF'
+# Plan
+
+## H-001 — Verifiable task description
+
+- Dependencies: none
+- Validation: exact observable check
+- Status: READY
+EOF
+
+  write_if_missing "$target/.harness/state.json" <<'EOF'
+{
+  "mission": "",
+  "status": "pending",
+  "currentTask": null,
+  "nextAction": "Define the mission and the first verifiable task",
+  "blockers": [],
+  "completedTasks": [],
+  "failedTasks": [],
+  "lastCheckpoint": null,
+  "updatedAt": null,
+  "validation": {}
+}
+EOF
+
+  write_if_missing "$target/.harness/journal.md" <<'EOF'
+# Journal
+EOF
+
+  write_if_missing "$target/.harness/errors.json" <<'EOF'
+{
+  "errors": []
+}
+EOF
+
+  write_if_missing "$target/.harness/decisions.md" <<'EOF'
+# Decisions
+EOF
+
+  write_if_missing "$target/.harness/architecture.md" <<'EOF'
+# Architecture
+EOF
+
+  write_if_missing "$target/.harness/context.md" <<'EOF'
+# Context
+EOF
+
+  echo "Harness scaffold ready in $target. Fill mission.md and plan.md before the first task."
+}
+
+main() {
+  local cmd="${1:-help}"
+  [ $# -gt 0 ] && shift
+  local target="${1:-.}"
+  [ $# -gt 0 ] && shift
+
+  case "$cmd" in
+    init)     cmd_init "$target" ;;
+    status)   cmd_status "$target" ;;
+    validate) exec python3 "$SCRIPTS_DIR/validate_project_harness.py" "$target" "$@" ;;
+    audit)    exec python3 "$SCRIPTS_DIR/audit_harness.py" "$target" --format markdown "$@" ;;
+    help|-h|--help) usage ;;
+    *) usage >&2; exit 1 ;;
+  esac
+}
+
+main "$@"

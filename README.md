@@ -52,6 +52,7 @@ The exact structure is adapted to the existing project. Files that add no recove
 - resumes work across threads, restarts, editors, providers, and models;
 - supports mixed-stack repositories with separate validation lanes;
 - converts recurring agent mistakes into concise rules or deterministic checks;
+- applies an application security baseline—server-side authorization, secret hygiene, database exposure, RLS, and authentication checks—to any software created under it;
 - can suggest relevant optional skills for the current task without installing or requiring them.
 
 ## Installation
@@ -65,6 +66,19 @@ npx skills add armcompany/arm-harness-skill --skill harness-engineering
 Use the equivalent global or agent-specific option documented by skills.sh when needed. Restart or reload the coding agent if it does not discover newly installed skills immediately.
 
 Confirm that `harness-engineering` appears in the agent's available skills before relying on explicit `$harness-engineering` invocation.
+
+## CLI wrapper (optional)
+
+`bin/harness` is a thin convenience wrapper over the bundled scripts for the deterministic parts of the workflow. It requires only `python3` and works from any directory:
+
+```bash
+harness init .       # scaffold AGENTS.md + .harness/ (never overwrites existing files)
+harness status .     # print CURRENT_STATE, CURRENT_OBJECTIVE, NEXT_ACTION, BLOCKERS
+harness validate .   # structural validation of the project harness
+harness audit .      # repository inventory: stacks, guides, sensors
+```
+
+The wrapper only scaffolds and inspects state. Framing, implementation, verification, and recovery are always executed by the agent through the skill—the CLI does not run the mission for you.
 
 ## Quick start
 
@@ -326,7 +340,7 @@ The agent should resolve exact targets, preserve unrelated work, and request aut
 - `references/persistent-project-harness.md`: persistent state and recovery model;
 - `references/project-harness-templates.md`: adaptable artifact templates;
 - `references/stack-discovery.md`: stack detection and validation guidance;
-- `references/security-production.md`: trust, MCP, secrets, supply-chain, deployment, migration, and production gates;
+- `references/security-production.md`: trust, MCP, secrets, supply-chain, deployment, migration, and production gates; application security baseline (server-side authorization, secret hygiene, database exposure, RLS, authentication checks) applied to any software created under the Harness; agent execution risk, sandboxing, and shadow-builder governance;
 - `references/control-taxonomy.md`: guide and sensor classification;
 - `references/harness-blueprint.md`: component design patterns;
 - `references/ratchet-playbook.md`: failure-to-control process;
@@ -335,6 +349,7 @@ The agent should resolve exact targets, preserve unrelated work, and request aut
 - `scripts/audit_harness.py`: conservative repository inventory;
 - `scripts/test_audit_harness.py`: dependency-free multi-stack detection checks;
 - `scripts/validate_project_harness.py`: cross-file state validator and failure simulation;
+- `bin/harness`: optional CLI wrapper over the scripts (`init`, `status`, `validate`, `audit`);
 - `agents/openai.yaml`: optional interface metadata for Codex and the ChatGPT desktop app.
 
 The skill intentionally does not include a project scaffold, framework replacement, or universal test command. It extends the project that already exists.
