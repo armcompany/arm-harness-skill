@@ -57,10 +57,16 @@ The exact structure is adapted to the existing project. Files that add no recove
 
 ## Installation
 
-Install from GitHub using [skills.sh](https://skills.sh/docs):
+Install the skill from GitHub using [skills.sh](https://skills.sh/docs):
 
 ```bash
 npx skills add armcompany/arm-harness-skill --skill harness-engineering
+```
+
+Or install the `arm-harness` npm package to get the `harness` CLI and the bundled skill and scripts:
+
+```bash
+npm install -g arm-harness   # or add it as a dev dependency
 ```
 
 Use the equivalent global or agent-specific option documented by skills.sh when needed. Restart or reload the coding agent if it does not discover newly installed skills immediately.
