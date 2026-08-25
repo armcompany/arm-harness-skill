@@ -56,8 +56,61 @@ def test_ignored_generated_environment() -> None:
         assert set(result["stacks"]) == {"JavaScript/TypeScript"}
 
 
+def test_symlinks_not_followed() -> None:
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        secret = root / "secret.txt"
+        secret.write_text("SHOULD_NOT_BE_READ", encoding="utf-8")
+        link_dir = root / "link"
+        link_dir.mkdir()
+        (link_dir / "to_secret").symlink_to(secret)
+        # Also create a package.json symlink pointing to the secret file.
+        (root / "package.json").symlink_to(secret)
+        result = AUDIT.detect(root, max_files=AUDIT.DEFAULT_MAX_FILES)
+        assert "SHOULD_NOT_BE_READ" not in json.dumps(result)
+        assert result["package_scripts"] == {}
+
+
+def test_large_package_json_skipped() -> None:
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        huge = '{"scripts": {"x": "' + "A" * 2_000_000 + '"}}'
+        write(root / "package.json", huge)
+        result = AUDIT.detect(root, max_file_size=1_000)
+        assert result["package_scripts"] == {}
+
+
+def test_max_depth_respected() -> None:
+    with tempfile.TemporaryDirectory() as directory:
+        root = Path(directory)
+        deep = root / "a" / "b" / "c" / "d" / "e"
+        deep.mkdir(parents=True)
+        write(deep / "package.json", '{"scripts": {"x": "y"}}')
+        # With max_depth=2 the file is below the limit and should be ignored.
+        result = AUDIT.detect(root, max_depth=2)
+        assert result["package_scripts"] == {}
+        # With max_depth=10 it should be found.
+        result = AUDIT.detect(root, max_depth=10)
+        assert "a/b/c/d/e/package.json" in result["package_scripts"]
+
+
+def test_invalid_root_raises() -> None:
+    with tempfile.TemporaryDirectory() as directory:
+        not_a_dir = Path(directory) / "file.txt"
+        not_a_dir.write_text("x", encoding="utf-8")
+        try:
+            AUDIT.detect(not_a_dir)
+        except ValueError:
+            return
+        raise AssertionError("detect() should raise ValueError for a non-directory root")
+
+
 if __name__ == "__main__":
     test_mixed_web_python()
     test_compiled_stacks()
     test_ignored_generated_environment()
+    test_symlinks_not_followed()
+    test_large_package_json_skipped()
+    test_max_depth_respected()
+    test_invalid_root_raises()
     print("audit_harness checks passed.")

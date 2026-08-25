@@ -1,6 +1,6 @@
 {
   "name": "arm-harness",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Persistent, project-owned execution harness for coding agents: harness-engineering skill plus a thin CLI wrapper (init, status, validate, audit).",
   "bin": {
     "harness": "bin/harness"

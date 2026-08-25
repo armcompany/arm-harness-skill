@@ -1,10 +1,5 @@
 __pycache__/
 *.pyc
-*.pyo
-.git
-.gitignore
 .DS_Store
-doc/
-packages/
-skills.sh.json
 *.tgz
+node_modules/
