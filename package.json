@@ -1,17 +1,26 @@
 {
   "name": "arm-harness",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Persistent, project-owned execution harness for coding agents: harness-engineering skill plus a thin CLI wrapper (init, status, validate, audit).",
+  "license": "MIT",
+  "author": "ARM Company <dev@armcompany.com>",
   "bin": {
     "harness": "bin/harness"
   },
   "files": [
     "bin",
     "skills",
-    "README.md"
+    "README.md",
+    "LICENSE",
+    "SUPPLY_CHAIN_AUDIT.md"
   ],
+  "engines": {
+    "node": ">=18.0.0",
+    "python3": ">=3.10.0"
+  },
   "scripts": {
-    "test": "PYTHONDONTWRITEBYTECODE=1 python3 skills/harness-engineering/scripts/test_audit_harness.py"
+    "test": "PYTHONDONTWRITEBYTECODE=1 python3 skills/harness-engineering/scripts/test_audit_harness.py",
+    "prepublishOnly": "npm test"
   },
   "keywords": [
     "ai-agents",
