@@ -1,13 +1,3 @@
-# ARM Harness
-
-`harness-engineering` gives coding agents a persistent, project-owned execution system. It can analyze an existing repository, create or improve its Harness, execute features through explicit validation, recover after interruption, and turn repeated failures into durable controls.
-
-The skill is language-agnostic. It detects repository evidence and adapts to JavaScript/TypeScript, React Native/Expo, Python, Go, Rust, Java/Kotlin, .NET, Ruby, PHP, Swift, and mixed-stack monorepos without creating a different Harness for each language.
-
-## What problem it solves
-
-An LLM session is temporary. A development mission usually is not. Without external state, a new thread or provider may repeat completed work, lose blockers, trust stale summaries, or declare success after writing code without validating it.
-
 ```text
  @@@@@@   @@@@@@@   @@@@@@@@@@      @@@  @@@   @@@@@@   @@@@@@@   @@@  @@@  @@@@@@@@   @@@@@@    @@@@@@
 @@@@@@@@  @@@@@@@@  @@@@@@@@@@@     @@@  @@@  @@@@@@@@  @@@@@@@@  @@@@ @@@  @@@@@@@@  @@@@@@@   @@@@@@@
@@ -20,6 +10,15 @@ An LLM session is temporary. A development mission usually is not. Without exter
 ::   :::  ::   :::  :::     ::      ::   :::  ::   :::  ::   :::   ::   ::   :: ::::  :::: ::   :::: ::
  :   : :   :   : :   :      :        :   : :   :   : :   :   : :  ::    :   : :: ::   :: : :    :: : :
 ```
+# ARM Harness
+
+`harness-engineering` gives coding agents a persistent, project-owned execution system. It can analyze an existing repository, create or improve its Harness, execute features through explicit validation, recover after interruption, and turn repeated failures into durable controls.
+
+The skill is language-agnostic. It detects repository evidence and adapts to JavaScript/TypeScript, React Native/Expo, Python, Go, Rust, Java/Kotlin, .NET, Ruby, PHP, Swift, and mixed-stack monorepos without creating a different Harness for each language.
+
+## What problem it solves
+
+An LLM session is temporary. A development mission usually is not. Without external state, a new thread or provider may repeat completed work, lose blockers, trust stale summaries, or declare success after writing code without validating it.
 
 This skill moves operational memory into the repository:
 
