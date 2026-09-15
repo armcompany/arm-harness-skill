@@ -66,6 +66,10 @@ Prefer small, enforceable controls over long rule documents. Every durable rule 
 9. Validate the changed artifacts and the target project's own checks. When a project harness exists, run `scripts/validate_project_harness.py <repo>`.
 10. Simulate at least one relevant failure. A harness improvement is not done until the guide or sensor prevents, surfaces, or corrects it.
 
+## Skill discovery
+
+When a project needs a capability that is not installed, inspect local skills first, then search trusted catalogs and official repositories. Evaluate relevance, maintenance, source trust, overlap, conflicts, permissions, and cost. Choose the smallest specialist that fills the gap, read it before use, and record the decision. Discovery may be automatic; installation requires explicit authorization or an existing repository policy.
+
 ## Persistent Execution Protocol
 
 Use a bounded `Frame -> Observe -> Run -> Verify -> Learn/Loop -> Persist` cycle. Work on one logical task at a time. The current code, Git diff, and runtime behavior remain the technical source of truth; harness records can be stale.
