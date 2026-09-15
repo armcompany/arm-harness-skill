@@ -12,6 +12,8 @@
 ```
 # ARM Harness
 
+[![skills.sh](https://skills.sh/b/armcompany/arm-harness-skill)](https://www.skills.sh/armcompany/arm-harness-skill/harness-engineering)
+
 `harness-engineering` gives coding agents a persistent, project-owned execution system. It can analyze an existing repository, create or improve its Harness, execute features through explicit validation, recover after interruption, and turn repeated failures into durable controls.
 
 The skill is language-agnostic. It detects repository evidence and adapts to JavaScript/TypeScript, React Native/Expo, Python, Go, Rust, Java/Kotlin, .NET, Ruby, PHP, Swift, and mixed-stack monorepos without creating a different Harness for each language.
