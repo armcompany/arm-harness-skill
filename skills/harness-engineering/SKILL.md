@@ -1,7 +1,6 @@
 ---
 name: harness-engineering
-description: >-
-  Design, audit, implement, and resume coding-agent harnesses: AGENTS.md/CLAUDE.md rules, project-owned mission and state, plans, journals, checkpoints, recovery, skills, tools, MCP servers, hooks, CI checks, sandboxes, subagents, and feedback sensors. Use for harness engineering, engenharia de arnes, agent autonomy, persistent execution across threads or models, "Resume Harness", reducing repeated mistakes, turning failures into rules or checks, or building and auditing agent workflows.
+description: Design, audit, or evolve a coding-agent harness. Use for agent rules, durable state, checkpoints, recovery, skills, tools, hooks, CI sensors, or converting recurring failures into enforceable controls.
 ---
 
 ```
@@ -41,11 +40,7 @@ Prefer small, enforceable controls over long rule documents. Every durable rule 
 2. Clarify the bounded context: target agents, topology, autonomy, failure history, checks, release constraints, and what "less supervision" means.
 3. Inventory the current harness and detect its stacks before proposing changes. If filesystem access is available, run:
 
-   ```bash
-   python skills/harness-engineering/scripts/audit_harness.py . --format markdown
-   ```
-
-   If the skill is installed elsewhere, resolve the script path from the skill directory.
+   Run `scripts/audit_harness.py . --format markdown` from this skill's directory. Resolve that directory first; do not assume a repository-relative installation path.
 
    Read `references/stack-discovery.md` for every detected stack. Prefer commands declared by the repository; treat conventional commands only as candidates until configuration confirms them.
 
